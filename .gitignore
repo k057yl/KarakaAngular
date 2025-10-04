@@ -1,0 +1,15 @@
+# Backend
+**/bin/
+**/obj/
+**/appsettings.json
+
+# Frontend (Angular / Node)
+ClientKarakatsiyaHelper/node_modules/
+ClientKarakatsiyaHelper/dist/
+ClientKarakatsiyaHelper/.env
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache

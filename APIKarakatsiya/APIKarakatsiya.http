@@ -1,0 +1,6 @@
+@APIKarakatsiya_HostAddress = http://localhost:5101
+
+GET {{APIKarakatsiya_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
