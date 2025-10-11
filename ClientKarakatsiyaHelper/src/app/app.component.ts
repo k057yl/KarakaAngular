@@ -1,43 +1,45 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
+import { MainComponent } from './main/main.component';
 import { FooterComponent } from './footer/footer.component';
-import { LeftPanelComponent } from './panels/left-panel.component';
-import { RightPanelComponent } from './panels/right-panel.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, FooterComponent, LeftPanelComponent, RightPanelComponent],
+  imports: [HeaderComponent, MainComponent, FooterComponent],
   template: `
     <app-header></app-header>
-    <div class="main">
-      <app-left-panel></app-left-panel>
-      <div class="content">
-        <router-outlet></router-outlet>
-      </div>
-      <app-right-panel></app-right-panel>
-    </div>
+    <app-main></app-main>
     <app-footer></app-footer>
   `,
   styles: [`
-    :host {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      margin: 0;
+    :host { 
+      display: flex; 
+      flex-direction: column; 
+      height: 100vh; 
+      width: 100vw;
+      overflow: hidden;
     }
-    .main {
+
+    app-header {
+      display: flex;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    app-main {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
-    .content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
+
+    app-footer {
+      height: 60px;
+      width: 100%;
+      flex-shrink: 0;
     }
   `]
 })
-export class AppComponent {}
+export class AppComponent {
+  title = 'app';
+}

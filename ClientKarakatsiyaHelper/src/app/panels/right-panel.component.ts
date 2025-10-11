@@ -8,11 +8,10 @@ import { CommonModule } from '@angular/common';
   template: `<div class="panel">Правая панель</div>`,
   styles: [`
     .panel {
+      flex: 1;
       width: 200px;
-      background: #eee;
-      height: 100%;
-      padding: 10px;
-      box-sizing: border-box;
+      background: #a8048dff;
+      color: #000;
     }
   `]
 })

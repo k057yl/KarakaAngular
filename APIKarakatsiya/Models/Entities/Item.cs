@@ -14,7 +14,7 @@
         public string? Description { get; set; }
         public decimal PurchasePrice { get; set; }
         public DateTime PurchaseDate { get; set; }
-        public string Status { get; set; } = "available"; // available/sold
+        public string Status { get; set; } = "available";
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

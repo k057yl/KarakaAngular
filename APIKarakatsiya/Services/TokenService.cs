@@ -17,20 +17,28 @@ namespace APIKarakatsiya.Services
 
         public string GenerateJwtToken(AppUser user, IList<string> roles)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            // Получаем ключ из конфига
+            var rawKey = _config["Jwt:Key"];
+            if (string.IsNullOrEmpty(rawKey) || rawKey.Length < 16)
+                throw new ArgumentException("Jwt:Key not found or too short (min 16 chars)");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(rawKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            // Создаем список claims
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
+            // Формируем токен
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
-                audience: null,
+                audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(7),
                 signingCredentials: creds

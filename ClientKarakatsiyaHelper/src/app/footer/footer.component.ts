@@ -8,11 +8,11 @@ import { CommonModule } from '@angular/common';
   template: `<footer class="footer">© 2025 Karakatsiya</footer>`,
   styles: [`
     .footer {
-      height: 60px;
+      flex: 1;
+      height: 100%;
       width: 100%;
-      background: #222;
-      color: white;
-      display: flex;
+      background: #06e006ff;
+      color: #000;
       align-items: center;
       justify-content: center;
     }

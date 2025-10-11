@@ -1,5 +1,6 @@
 ﻿using APIKarakatsiya.Data;
 using APIKarakatsiya.Models.Entities;
+using APIKarakatsiya.Services.Items;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,7 @@ namespace APIKarakatsiya.Services
             services.AddScoped<EmailService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IItemService, ItemService>();
 
             return services;
         }
