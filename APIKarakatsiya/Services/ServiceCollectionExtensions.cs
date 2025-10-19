@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
 
 namespace APIKarakatsiya.Services
 {
@@ -13,9 +14,24 @@ namespace APIKarakatsiya.Services
     {
         public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration config)
         {
+            // DB + Identity
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
             // JWT
-            var key = config["Jwt:Key"];
-            var issuer = config["Jwt:Issuer"];
+            var jwt = config.GetSection("Jwt");
+            var key = jwt["Key"]?.Trim();
+            var issuer = jwt["Issuer"]?.Trim();
+            var audience = jwt["Audience"]?.Trim();
+
+            if (string.IsNullOrEmpty(key))
+                throw new InvalidOperationException("JWT Key missing.");
+
+            var keyBytes = Encoding.UTF8.GetBytes(key);
 
             services.AddAuthentication(options =>
             {
@@ -29,33 +45,38 @@ namespace APIKarakatsiya.Services
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidateAudience = false,
+                    ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = issuer,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+                    //RoleClaimType = ClaimTypes.Role
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+                        return context.Response.WriteAsync("{\"error\": \"Unauthorized: token invalid or missing.\"}");
+                    }
                 };
             });
 
             services.AddAuthorization();
 
             // CORS
-            var frontendUrl = config["Frontend:Url"];
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngular", policy =>
-                    policy.WithOrigins(frontendUrl)
+                    policy.WithOrigins("http://localhost:4200")
                           .AllowAnyMethod()
-                          .AllowAnyHeader());
+                          .AllowAnyHeader()
+                          .AllowCredentials());
             });
-
-            // DB + Identity
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(config.GetConnectionString("DefaultConnection")));
-
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
 
             // Custom services
             services.AddScoped<EmailService>();

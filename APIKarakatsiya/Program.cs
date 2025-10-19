@@ -1,20 +1,24 @@
+﻿using APIKarakatsiya.Data;
 using APIKarakatsiya.Models.Entities;
 using APIKarakatsiya.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAppServices(builder.Configuration);
-
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Seed admin и default category
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
     if (!await roleManager.RoleExistsAsync("admin"))
         await roleManager.CreateAsync(new IdentityRole("admin"));
@@ -30,15 +34,21 @@ using (var scope = app.Services.CreateScope())
             EmailConfirmed = true
         };
         var password = builder.Configuration["Admin:Password"];
-        var result = await userManager.CreateAsync(admin, password);
-        if (result.Succeeded)
+        if ((await userManager.CreateAsync(admin, password)).Succeeded)
             await userManager.AddToRoleAsync(admin, "admin");
+    }
+
+    if (!await db.Categories.AnyAsync(c => c.Name == "Default"))
+    {
+        db.Categories.Add(new Category { Name = "Default" });
+        await db.SaveChangesAsync();
     }
 }
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

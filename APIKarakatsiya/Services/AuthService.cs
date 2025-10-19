@@ -57,7 +57,7 @@ namespace APIKarakatsiya.Services
 
         public async Task<string?> LoginAsync(LoginDto dto)
         {
-            var user = await _userManager.FindByNameAsync(dto.Username);
+            var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null) return null;
 
             var valid = await _userManager.CheckPasswordAsync(user, dto.Password);

@@ -7,6 +7,6 @@
         public decimal PurchasePrice { get; set; }
         public DateTime PurchaseDate { get; set; }
         public int CategoryId { get; set; }
-        public string UserId { get; set; } = null!;
+        public string? UserId { get; set; } 
     }
 }

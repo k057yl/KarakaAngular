@@ -1,45 +1,41 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
-import { MainComponent } from './main/main.component';
-import { FooterComponent } from './footer/footer.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, MainComponent, FooterComponent],
+  imports: [CommonModule, HeaderComponent, RouterModule],
   template: `
-    <app-header></app-header>
-    <app-main></app-main>
-    <app-footer></app-footer>
+    <div class="header">
+      <app-header></app-header>
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
   `,
   styles: [`
-    :host { 
-      display: flex; 
-      flex-direction: column; 
-      height: 100vh; 
-      width: 100vw;
-      overflow: hidden;
+    :host {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
-    app-header {
-      display: flex;
+    .header {
       height: 160px;
-      flex-shrink: 0;
-    }
-
-    app-main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-
-    app-footer {
-      height: 60px;
       width: 100%;
-      flex-shrink: 0;
+    }
+    app-header {
+      flex: 0 0 auto;
+    }
+
+    .content {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      padding: 1rem;
+      background: #328611ff;
     }
   `]
 })
-export class AppComponent {
-  title = 'app';
-}
+export class AppComponent {}
