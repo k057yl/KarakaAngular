@@ -7,9 +7,9 @@ export interface ItemCreateDto {
   Title: string;
   Description?: string;
   PurchasePrice: number;
-  PurchaseDate: string; // ISO string
+  PurchaseDate: string;
   CategoryId: number;
-  //UserId: '';
+  PhotoUrl?: string;
 }
 
 @Injectable({ providedIn: 'root' })

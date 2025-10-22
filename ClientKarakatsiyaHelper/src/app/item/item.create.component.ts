@@ -25,6 +25,12 @@ interface Category {
       <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
     </select>
 
+    <input type="file" (change)="uploadImage($event)">
+    <div *ngIf="photoUrl">
+      <p>Фото загружено:</p>
+      <img [src]="photoUrl" alt="preview" width="150">
+    </div>
+
     <button (click)="createItem()">Создать</button>
     <p>{{ message }}</p>
   `
@@ -36,11 +42,11 @@ export class ItemCreateComponent implements OnInit {
     PurchasePrice: 0,
     PurchaseDate: '',
     CategoryId: 0,
-    //UserId: ''
   };
 
   categories: Category[] = [];
   message = '';
+  photoUrl = ''; // сюда сохраняем URL Cloudinary
   private categoriesUrl = 'https://localhost:7280/api/categories';
 
   constructor(private auth: AuthService) {}
@@ -55,6 +61,28 @@ export class ItemCreateComponent implements OnInit {
       error: err => console.error('Ошибка загрузки категорий', err)
     });
   }
+
+  uploadImage(event: any) {
+  const file = event.target.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'drne5mbi9'); // точное имя пресета
+
+  fetch('https://api.cloudinary.com/v1_1/drne5mbi9/image/upload', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log('Cloudinary response:', data); // <--- проверь, есть ли secure_url
+    if (data.secure_url) {
+      this.photoUrl = data.secure_url;
+    } else {
+      console.error('Ошибка загрузки на Cloudinary', data);
+    }
+  })
+  .catch(err => console.error('Upload error:', err));
+}
 
   createItem() {
   if (!this.item.Title.trim()) {
@@ -72,23 +100,24 @@ export class ItemCreateComponent implements OnInit {
     return;
   }
 
+  if (!this.photoUrl) {
+    this.message = 'Сначала загрузите фото!';
+    return;
+  }
+
   const dto: ItemCreateDto = {
-    Title: this.item.Title,
-    Description: this.item.Description,
-    PurchasePrice: this.item.PurchasePrice,
+    ...this.item,
     PurchaseDate: new Date(this.item.PurchaseDate).toISOString(),
-    CategoryId: this.item.CategoryId
+    PhotoUrl: this.photoUrl
   };
+
+  console.log('Отправляем DTO:', dto);
 
   this.auth.createItem(dto).subscribe({
     next: () => this.message = 'Айтем успешно создан!',
     error: err => {
-      console.error(err); // полностью логируем объект ошибки
-      if (err.error && err.error.errors) {
-        this.message = 'Ошибка создания: ' + JSON.stringify(err.error.errors);
-      } else {
-        this.message = 'Ошибка создания: ' + err.message;
-      }
+      console.error(err);
+      this.message = 'Ошибка создания: ' + (err.message || 'Неизвестная ошибка');
     }
   });
 }

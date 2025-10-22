@@ -1,4 +1,5 @@
 ﻿using APIKarakatsiya.Data;
+using APIKarakatsiya.Models.DTOs.ItemDto;
 using APIKarakatsiya.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,53 +8,71 @@ namespace APIKarakatsiya.Services.Items
     public class ItemService : IItemService
     {
         private readonly AppDbContext _context;
-        public ItemService(AppDbContext context)
-        {
-            _context = context;
-        }
-        public async Task<Item> CreateAsync(Item item)
+        public ItemService(AppDbContext context) => _context = context;
+
+        public async Task<ItemDto> CreateAsync(Item item)
         {
             _context.Items.Add(item);
             await _context.SaveChangesAsync();
-            return item;
+
+            return new ItemDto
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                PurchasePrice = item.PurchasePrice,
+                PhotoUrls = item.Photos.Select(p => p.Url).ToList()
+            };
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
             var item = await _context.Items.FindAsync(id);
-            if (item == null)
-            {
-                return false;
-            }
+            if (item == null) return false;
 
             _context.Items.Remove(item);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<IEnumerable<Item>> GetAllAsync()
+        public async Task<List<ItemDto>> GetAllAsync()
         {
-            return await _context.Items
-                .Include(i => i.Category)
+            var items = await _context.Items
                 .Include(i => i.Photos)
                 .ToListAsync();
+
+            return items.Select(i => new ItemDto
+            {
+                Id = i.Id,
+                Title = i.Title,
+                Description = i.Description,
+                PurchasePrice = i.PurchasePrice,
+                PhotoUrls = i.Photos.Select(p => p.Url).ToList()
+            }).ToList();
         }
 
-        public async Task<Item?> GetByIdAsync(int id)
+        public async Task<ItemDto?> GetByIdAsync(int id)
         {
-            return await _context.Items
-                .Include (i => i.Category)
-                .Include (i => i.Photos)
+            var item = await _context.Items
+                .Include(i => i.Photos)
                 .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (item == null) return null;
+
+            return new ItemDto
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                PurchasePrice = item.PurchasePrice,
+                PhotoUrls = item.Photos.Select(p => p.Url).ToList()
+            };
         }
 
-        public async Task<Item> UpdateAsync(int id, Item updated)
+        public async Task<ItemDto> UpdateAsync(int id, Item updated)
         {
             var existing = await _context.Items.FindAsync(id);
-            if (existing == null)
-            {
-                throw new KeyNotFoundException("Item not found");
-            }
+            if (existing == null) throw new KeyNotFoundException("Item not found");
 
             existing.Title = updated.Title;
             existing.Description = updated.Description;
@@ -63,7 +82,15 @@ namespace APIKarakatsiya.Services.Items
             existing.UpdatedAt = updated.UpdatedAt;
 
             await _context.SaveChangesAsync();
-            return existing;
+
+            return new ItemDto
+            {
+                Id = existing.Id,
+                Title = existing.Title,
+                Description = existing.Description,
+                PurchasePrice = existing.PurchasePrice,
+                PhotoUrls = existing.Photos.Select(p => p.Url).ToList()
+            };
         }
     }
 }

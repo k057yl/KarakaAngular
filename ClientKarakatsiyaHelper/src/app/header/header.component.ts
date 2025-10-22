@@ -12,7 +12,7 @@ import { HeaderAuthPanelComponent } from './header.auth.panel.component';
       <div class="logo"><div>
       <nav>
         <button routerLink="/item-create">Создать объект</button>
-        
+        <button routerLink="/item-list">Посмотреть объекты</button>
       </nav>
       <app-header-auth-panel></app-header-auth-panel>
     </div>

@@ -50,8 +50,7 @@ namespace APIKarakatsiya.Services
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = issuer,
                     ValidAudience = audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-                    //RoleClaimType = ClaimTypes.Role
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
                 };
 
                 options.Events = new JwtBearerEvents

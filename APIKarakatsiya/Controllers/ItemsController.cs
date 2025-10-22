@@ -3,7 +3,6 @@ using APIKarakatsiya.Models.Entities;
 using APIKarakatsiya.Services.Items;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -14,7 +13,11 @@ public class ItemsController : ControllerBase
     public ItemsController(IItemService service) => _service = service;
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _service.GetAllAsync());
+    public async Task<IActionResult> GetAll()
+    {
+        var items = await _service.GetAllAsync();
+        return Ok(items);
+    }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
@@ -27,9 +30,7 @@ public class ItemsController : ControllerBase
     public async Task<IActionResult> CreateItem([FromBody] ItemCreateDto dto)
     {
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        //var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-        if (string.IsNullOrEmpty(userId))
-            return Unauthorized();
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
         var item = new Item
         {
@@ -42,8 +43,13 @@ public class ItemsController : ControllerBase
             Status = "available"
         };
 
-        var created = await _service.CreateAsync(item);
-        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        if (!string.IsNullOrEmpty(dto.PhotoUrl))
+        {
+            item.Photos.Add(new ItemPhoto { Url = dto.PhotoUrl, CreatedAt = DateTime.UtcNow });
+        }
+
+        var createdDto = await _service.CreateAsync(item);
+        return CreatedAtAction(nameof(GetById), new { id = createdDto.Id }, createdDto);
     }
 
     [HttpPut("{id}")]
