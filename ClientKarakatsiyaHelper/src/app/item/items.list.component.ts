@@ -1,29 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-
-interface Item {
-  id: number;
-  title: string;
-  description: string;
-  purchasePrice: number;
-  photoUrls: string[];
-}
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-items-list',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   template: `
     <div class="items-container">
       <div *ngFor="let item of items" class="item-card">
-        <div class="item-photos" *ngIf="item.photoUrls?.length">
-          <img *ngFor="let url of item.photoUrls" [src]="url" alt="{{ item.title }}" />
-        </div>
-        <div class="item-info">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.description }}</p>
-          <div class="price">💸 {{ item.purchasePrice | number:'1.0-2' }}</div>
+        <img *ngIf="item.photoUrls?.length" [src]="item.photoUrls[0]" class="item-image" alt="item photo" />
+        <div class="item-content">
+          <div class="item-title">{{ item.title }}</div>
+          <div class="item-description">{{ item.description }}</div>
+          <div class="item-footer">
+            <span>Автор: {{ item.userName }}</span>
+            <span>{{ item.createdAt | date:'short' }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -31,55 +25,82 @@ interface Item {
   styles: [`
     .items-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      padding: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      justify-content: center;
     }
 
     .item-card {
-      background: #1e1e1e;
-      color: #eee;
-      border-radius: 8px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-      transition: transform 0.2s;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      cursor: pointer;
     }
 
     .item-card:hover {
-      transform: scale(1.02);
+      transform: translateY(-6px);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.15);
     }
 
-    .item-photos img {
+    .item-image {
       width: 100%;
-      height: 200px;
+      height: 180px;
       object-fit: cover;
-      margin-bottom: 4px;
     }
 
-    .item-info {
-      padding: 12px;
+    .item-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .price {
-      font-weight: bold;
-      margin-top: 8px;
-      color: #8fce00;
+    .item-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .item-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.4;
+      height: 40px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .item-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #888;
+      font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+      .items-container {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
     }
   `]
 })
 export class ItemsListComponent implements OnInit {
-  items: Item[] = [];
-  apiUrl = 'https://localhost:7280/api/items';
+  items: any[] = [];
+  private apiUrl = `${environment.apiBaseUrl}/items/my`;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.loadItems();
-  }
-
-  loadItems() {
-    this.http.get<Item[]>(this.apiUrl).subscribe({
-      next: (data) => this.items = data,
+    this.http.get(this.apiUrl).subscribe({
+      next: (data: any) => this.items = data,
       error: (err) => console.error('Ошибка загрузки айтемов:', err)
     });
   }

@@ -3,6 +3,7 @@ using APIKarakatsiya.Models.Entities;
 using APIKarakatsiya.Services.Items;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -54,6 +55,16 @@ public class ItemsController : ControllerBase
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Item item) => Ok(await _service.UpdateAsync(id, item));
+
+    [HttpGet("my")]
+    public async Task<ActionResult<IEnumerable<ItemDto>>> GetMyItems()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null) return Unauthorized();
+
+        var items = await _service.GetAllByUserAsync(userId);
+        return Ok(items);
+    }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)

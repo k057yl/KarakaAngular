@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -32,7 +32,7 @@ export class RegisterComponent {
   password = '';
   code = '';
   message = '';
-  codeSent = false; // флаг, показывающий поле для кода
+  codeSent = false;
 
   constructor(private auth: AuthService) {}
 

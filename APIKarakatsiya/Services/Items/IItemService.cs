@@ -10,5 +10,6 @@ namespace APIKarakatsiya.Services.Items
         Task<List<ItemDto>> GetAllAsync();
         Task<ItemDto?> GetByIdAsync(int id);
         Task<ItemDto> UpdateAsync(int id, Item updated);
+        Task<List<ItemDto>> GetAllByUserAsync(string userId);
     }
 }

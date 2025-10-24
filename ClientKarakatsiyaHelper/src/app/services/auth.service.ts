@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface ItemCreateDto {
   Title: string;
@@ -18,8 +19,8 @@ export class AuthService {
   token$ = this.tokenSubject.asObservable();
 
   private pendingEmail: string | null = null;
-  private apiUrl = 'https://localhost:7280/api/auth';
-  private itemsUrl = 'https://localhost:7280/api/items/create';
+  private apiUrl = `${environment.apiBaseUrl}/auth`;
+  private itemsUrl = `${environment.apiBaseUrl}/items/create`;
 
   constructor(private http: HttpClient) {}
 

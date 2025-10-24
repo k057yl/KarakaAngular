@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService, ItemCreateDto } from '../auth.service';
+import { AuthService, ItemCreateDto } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 interface Category {
   id: number;
@@ -13,27 +14,76 @@ interface Category {
   standalone: true,
   imports: [FormsModule, CommonModule],
   template: `
-    <h3>Создать айтем</h3>
+    <div class="create-container">
+      <h3>Создать айтем</h3>
 
-    <input placeholder="Название" [(ngModel)]="item.Title">
-    <input placeholder="Описание" [(ngModel)]="item.Description">
-    <input type="number" placeholder="Цена покупки" [(ngModel)]="item.PurchasePrice">
-    <input type="date" placeholder="Дата покупки" [(ngModel)]="item.PurchaseDate">
+      <input placeholder="Название" [(ngModel)]="item.Title">
+      <input placeholder="Описание" [(ngModel)]="item.Description">
+      <input type="number" placeholder="Цена покупки" [(ngModel)]="item.PurchasePrice">
+      <input type="date" [(ngModel)]="item.PurchaseDate">
 
-    <select [(ngModel)]="item.CategoryId">
-      <option [value]="0" disabled>Выберите категорию</option>
-      <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
-    </select>
+      <select [(ngModel)]="item.CategoryId">
+        <option [value]="0" disabled>Выберите категорию</option>
+        <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+      </select>
 
-    <input type="file" (change)="uploadImage($event)">
-    <div *ngIf="photoUrl">
-      <p>Фото загружено:</p>
-      <img [src]="photoUrl" alt="preview" width="150">
+      <input type="file" (change)="uploadImage($event)">
+      <div *ngIf="photoUrl" class="preview">
+        <p>Фото загружено:</p>
+        <img [src]="photoUrl" alt="preview">
+      </div>
+
+      <button (click)="createItem()">Создать</button>
+      <p>{{ message }}</p>
     </div>
+  `,
+  styles: [`
+    .create-container {
+      max-width: 400px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-    <button (click)="createItem()">Создать</button>
-    <p>{{ message }}</p>
-  `
+    input, select, button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input:focus, select:focus {
+      border-color: #3f51b5;
+      outline: none;
+    }
+
+    button {
+      background-color: #3f51b5;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #5c6bc0;
+    }
+
+    .preview {
+      text-align: center;
+    }
+
+    .preview img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+  `]
 })
 export class ItemCreateComponent implements OnInit {
   item: ItemCreateDto = {
@@ -46,8 +96,9 @@ export class ItemCreateComponent implements OnInit {
 
   categories: Category[] = [];
   message = '';
-  photoUrl = ''; // сюда сохраняем URL Cloudinary
-  private categoriesUrl = 'https://localhost:7280/api/categories';
+  photoUrl = '';
+
+  private categoriesUrl = `${environment.apiBaseUrl}/categories`;
 
   constructor(private auth: AuthService) {}
 
@@ -66,15 +117,14 @@ export class ItemCreateComponent implements OnInit {
   const file = event.target.files[0];
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', 'drne5mbi9'); // точное имя пресета
+  formData.append('upload_preset', environment.cloudinaryPreset);
 
-  fetch('https://api.cloudinary.com/v1_1/drne5mbi9/image/upload', {
+  fetch(environment.cloudinaryUrl, {
     method: 'POST',
     body: formData
   })
   .then(res => res.json())
   .then(data => {
-    console.log('Cloudinary response:', data); // <--- проверь, есть ли secure_url
     if (data.secure_url) {
       this.photoUrl = data.secure_url;
     } else {
@@ -84,7 +134,7 @@ export class ItemCreateComponent implements OnInit {
   .catch(err => console.error('Upload error:', err));
 }
 
-  createItem() {
+  createItem(): void {
   if (!this.item.Title.trim()) {
     this.message = 'Введите название!';
     return;
@@ -110,8 +160,6 @@ export class ItemCreateComponent implements OnInit {
     PurchaseDate: new Date(this.item.PurchaseDate).toISOString(),
     PhotoUrl: this.photoUrl
   };
-
-  console.log('Отправляем DTO:', dto);
 
   this.auth.createItem(dto).subscribe({
     next: () => this.message = 'Айтем успешно создан!',

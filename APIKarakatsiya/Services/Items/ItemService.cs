@@ -92,5 +92,22 @@ namespace APIKarakatsiya.Services.Items
                 PhotoUrls = existing.Photos.Select(p => p.Url).ToList()
             };
         }
+
+        public async Task<List<ItemDto>> GetAllByUserAsync(string userId)
+        {
+            var items = await _context.Items
+                .Include(i => i.Photos)
+                .Where(i => i.UserId == userId)
+                .ToListAsync();
+
+            return items.Select(i => new ItemDto
+            {
+                Id = i.Id,
+                Title = i.Title,
+                Description = i.Description,
+                PurchasePrice = i.PurchasePrice,
+                PhotoUrls = i.Photos.Select(p => p.Url).ToList()
+            }).ToList();
+        }
     }
 }
