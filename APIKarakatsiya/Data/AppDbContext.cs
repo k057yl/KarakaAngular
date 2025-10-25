@@ -41,12 +41,40 @@ namespace APIKarakatsiya.Data
                 .HasForeignKey(p => p.ItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Sale -> Item
+            // Sale -> Item (один к одному)
             builder.Entity<Sale>()
                 .HasOne(s => s.Item)
                 .WithOne(i => i.Sale)
                 .HasForeignKey<Sale>(s => s.ItemId)
                 .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            // Найти новые продажи и выставить CreatedAt, Profit
+            var newSales = ChangeTracker.Entries<Sale>()
+                .Where(e => e.State == EntityState.Added)
+                .Select(e => e.Entity)
+                .ToList();
+
+            if (newSales.Any())
+            {
+                // Получаем цены закупки по товарам
+                var itemIds = newSales.Select(s => s.ItemId).Distinct().ToList();
+                var items = await Items
+                    .Where(i => itemIds.Contains(i.Id))
+                    .ToDictionaryAsync(i => i.Id, i => i.PurchasePrice, cancellationToken);
+
+                foreach (var sale in newSales)
+                {
+                    sale.CreatedAt = DateTime.UtcNow;
+
+                    if (items.TryGetValue(sale.ItemId, out var purchasePrice))
+                        sale.Profit = sale.SalePrice - purchasePrice;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

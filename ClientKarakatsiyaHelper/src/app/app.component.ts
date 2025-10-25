@@ -23,7 +23,7 @@ import { RouterModule } from '@angular/router';
     }
 
     .header {
-      height: 160px;
+      height: 200px;
       width: 100%;
     }
     app-header {

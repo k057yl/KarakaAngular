@@ -21,7 +21,8 @@ namespace APIKarakatsiya.Services.Items
                 Title = item.Title,
                 Description = item.Description,
                 PurchasePrice = item.PurchasePrice,
-                PhotoUrls = item.Photos.Select(p => p.Url).ToList()
+                PhotoUrls = item.Photos.Select(p => p.Url).ToList(),
+                Status = item.Status.ToLower()
             };
         }
 
@@ -47,7 +48,8 @@ namespace APIKarakatsiya.Services.Items
                 Title = i.Title,
                 Description = i.Description,
                 PurchasePrice = i.PurchasePrice,
-                PhotoUrls = i.Photos.Select(p => p.Url).ToList()
+                PhotoUrls = i.Photos.Select(p => p.Url).ToList(),
+                Status = i.Status.ToLower()
             }).ToList();
         }
 
@@ -89,7 +91,8 @@ namespace APIKarakatsiya.Services.Items
                 Title = existing.Title,
                 Description = existing.Description,
                 PurchasePrice = existing.PurchasePrice,
-                PhotoUrls = existing.Photos.Select(p => p.Url).ToList()
+                PhotoUrls = existing.Photos.Select(p => p.Url).ToList(),
+                Status = existing.Status.ToLower()
             };
         }
 
@@ -106,7 +109,8 @@ namespace APIKarakatsiya.Services.Items
                 Title = i.Title,
                 Description = i.Description,
                 PurchasePrice = i.PurchasePrice,
-                PhotoUrls = i.Photos.Select(p => p.Url).ToList()
+                PhotoUrls = i.Photos.Select(p => p.Url).ToList(),
+                Status = i.Status.ToLower()
             }).ToList();
         }
     }

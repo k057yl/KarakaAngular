@@ -7,5 +7,6 @@
         public string? Description { get; set; }
         public decimal PurchasePrice { get; set; }
         public List<string> PhotoUrls { get; set; } = new();
+        public string Status { get; set; } = "available";
     }
 }

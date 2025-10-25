@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -9,13 +9,37 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // универсальный геттер
-  get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`);
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('jwt');
+    return new HttpHeaders(
+      token ? { Authorization: `Bearer ${token}` } : {}
+    );
   }
 
-  // универсальный пост
+  // универсальный GET
+  get<T>(endpoint: string): Observable<T> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { headers });
+  }
+
+  // универсальный POST
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data);
+    const headers = this.getAuthHeaders();
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data, { headers });
+  }
+
+  // ======================= Sales =======================
+  createSale(data: {
+    itemId: number;
+    salePrice: number;
+    saleDate: string;
+  }): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.baseUrl}/sales`, data, { headers });
+  }
+
+  getUserSales(): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(`${this.baseUrl}/sales/my`, { headers });
   }
 }
