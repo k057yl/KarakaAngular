@@ -23,15 +23,14 @@ import { AuthService } from '../services/auth.service';
   `,
   styles: [`
     .auth-panel {
-      width: 200px;
-      height: 160px;
+      width: 260px;
+      height: 200px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #222;
+      background: #0d9bd3ff;
       color: #fff;
-      border-radius: 8px;
     }
 
     p {

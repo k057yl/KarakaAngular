@@ -2,52 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-
-interface ItemDto {
-  id: number;
-  title: string;
-  description?: string;
-  purchasePrice: number;
-  photoUrls: string[];
-  status: string; // добавлено
-}
+import { ItemCardComponent, ItemDto } from '../item/item.card.component';
 
 @Component({
   selector: 'app-items-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ItemCardComponent],
   template: `
     <div class="items-container">
-      <div *ngFor="let item of items" class="item-card">
-        <img *ngIf="item.photoUrls?.length" [src]="item.photoUrls[0]" class="item-image" alt="item photo" />
-        <div class="item-content">
-          <div class="item-title">{{ item.title }}</div>
-          <div class="item-description">{{ item.description }}</div>
-          <div class="item-footer">
-            <span>💸 {{ item.purchasePrice | number:'1.0-2' }}</span>
-
-            <button *ngIf="item.status === 'available'" class="sell-btn" (click)="sellItem(item)">
-              Продать
-            </button>
-
-            <span *ngIf="item.status === 'sold'" class="sold-label">Продано</span>
-          </div>
-        </div>
-      </div>
+      <app-item-card
+        *ngFor="let item of items"
+        [item]="item"
+        (sell)="sellItem($event)">
+      </app-item-card>
     </div>
   `,
   styles: [`
-    .items-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
-    .item-card { background-color: #fff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.2s ease, box-shadow 0.3s ease; }
-    .item-card:hover { transform: translateY(-6px); box-shadow: 0 10px 18px rgba(0,0,0,0.15); }
-    .item-image { width: 100%; height: 180px; object-fit: cover; }
-    .item-content { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-    .item-title { font-size: 18px; font-weight: 600; color: #333; }
-    .item-description { font-size: 14px; color: #666; line-height: 1.4; height: 40px; overflow: hidden; text-overflow: ellipsis; }
-    .item-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-    .sell-btn { background-color: #4caf50; border: none; border-radius: 6px; padding: 6px 12px; color: white; font-weight: bold; cursor: pointer; transition: background-color 0.2s ease; }
-    .sell-btn:hover { background-color: #43a047; }
-    .sold-label { color: red; font-weight: bold; }
+    .items-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
   `]
 })
 export class ItemsListComponent implements OnInit {
@@ -60,12 +36,10 @@ export class ItemsListComponent implements OnInit {
   ngOnInit() {
     this.http.get<ItemDto[]>(this.apiUrl).subscribe({
       next: (data) => {
-        // Берём статус с сервера, приводим к нижнему регистру, безопасно
         this.items = data.map(i => ({
           ...i,
           status: (i.status ?? 'available').toLowerCase()
         }));
-        console.log('items loaded:', this.items);
       },
       error: (err) => console.error('Ошибка загрузки айтемов:', err)
     });
@@ -90,7 +64,7 @@ export class ItemsListComponent implements OnInit {
     this.http.post(this.salesUrl, saleDto).subscribe({
       next: () => {
         alert('Продажа успешно зарегистрирована!');
-        item.status = 'sold'; // обновляем фронт
+        item.status = 'sold';
       },
       error: (err) => console.error('Ошибка создания продажи:', err)
     });
