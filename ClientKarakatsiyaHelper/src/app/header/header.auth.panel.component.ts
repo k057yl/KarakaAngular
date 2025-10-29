@@ -9,8 +9,6 @@ import { AuthService } from '../services/auth.service';
   imports: [CommonModule, RouterModule],
   template: `
     <div class="auth-panel">
-      <button routerLink="/register">Регистрация</button>
-
       <ng-container *ngIf="isAuthenticated; else notLoggedIn">
         <p>Привет, {{ username }}</p>
         <button (click)="logout()">Выход</button>
@@ -18,39 +16,29 @@ import { AuthService } from '../services/auth.service';
 
       <ng-template #notLoggedIn>
         <button routerLink="/login">Логин</button>
+        <button routerLink="/register">Регистрация</button>
       </ng-template>
     </div>
   `,
   styles: [`
     .auth-panel {
-      width: 260px;
-      height: 200px;
       display: flex;
-      flex-direction: column;
+      gap: 10px;
       align-items: center;
-      justify-content: center;
-      background: #0d9bd3ff;
-      color: #fff;
-    }
-
-    p {
-      margin: 6px 0;
-      font-weight: bold;
     }
 
     button {
-      background: #0bf003;
+      background: var(--btn-bg);
       border: none;
       padding: 8px 12px;
       cursor: pointer;
-      color: #000;
+      color: var(--btn-text);
       font-weight: bold;
       border-radius: 4px;
-      margin-top: 6px;
     }
 
     button:hover {
-      background: #09c002;
+      background: var(--accent);
     }
   `]
 })

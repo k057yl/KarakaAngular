@@ -1,1 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg: #475d86;
+  --header-bg: #475d86;
+  --panel-bg: #475d86;
+  --text: #0f1720;
+  --muted: #6b7c8e;
+  --accent: #0078a3;
+  --btn-bg: var(--accent);
+  --btn-text: #ffffff;
+}
+
+body.dark-theme {
+  --bg: #0E1A2B;
+  --panel-bg: #0E1A2B;
+  --header-bg: #0E1A2B;
+  --text: #E4F0FF;
+  --muted: #8AA0B8;
+  --accent: #16C2D6;
+  --btn-bg: #00B4C6;
+  --btn-text: #00121a;
+}
+
+:root, .dark-theme {
+  transition: background-color 180ms linear, color 180ms linear;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+}

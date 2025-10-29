@@ -38,7 +38,7 @@ export interface ItemDto {
     </div>
   `,
   styles: [`
-    .item-card { background-color: #8be6e6ff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .item-card { background-color: #8be6e6ff; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
     .item-card:hover { transform: translateY(-6px); box-shadow: 0 10px 18px rgba(0,0,0,0.15); }
     .item-image { width: 260px; height: 160px; object-fit: contain; background: #3ec084ff;
       display: block; margin: 0 auto; padding: 10px;}

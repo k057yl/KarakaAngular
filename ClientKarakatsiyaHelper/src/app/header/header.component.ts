@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderAuthPanelComponent } from './header.auth.panel.component';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-header',
@@ -9,74 +10,96 @@ import { HeaderAuthPanelComponent } from './header.auth.panel.component';
   imports: [CommonModule, RouterModule, HeaderAuthPanelComponent],
   template: `
     <header class="header">
-      <div class="logo">LOGO</div>
+      <div class="logo">
+        <a routerLink="/">LOGO</a>
+      </div>
 
-      <nav class="nav">
-        <button routerLink="/item-create">Создать объект</button>
-        <button routerLink="/item-list">Посмотреть объекты</button>
-        <button routerLink="/sale-list">Посмотреть продажи</button>
-      </nav>
+      <div>
+        <p>Karakatsiya</p>
+      </div>
 
-      <div class="auth">
+      <div class="auth-and-theme">
         <app-header-auth-panel></app-header-auth-panel>
+        <button class="btn toggle" (click)="toggleTheme()">
+          {{ currentTheme === 'dark' ? '☀️ Light' : '🌙 Dark' }}
+        </button>
       </div>
     </header>
   `,
   styles: [`
     .header {
-      display: grid;
-      grid-template-columns: 260px 1fr 260px;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      background: #a10d0d;
-      color: #0bf003;
-      width: 100%;
-      height: 200px;
-      margin: 0;
+      height: 60px;
+      padding: 0 20px;
+      background-color: var(--header-bg);
+      color: #fff;
       box-sizing: border-box;
-      overflow-x: hidden;
+      gap: 20px;
     }
 
-    .logo {
-      background: #1c04f733;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
+    .logo a {
       color: #fff;
-      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
     }
 
     .nav {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      flex: 1;
+      gap: 15px;
     }
 
     .nav button {
       background: #333;
       color: #fff;
       border: none;
-      padding: 8px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.2s ease;
+      font-weight: bold;
     }
 
     .nav button:hover {
       background: #555;
     }
 
-    .auth {
+    .auth-and-theme {
       display: flex;
-      justify-content: flex-end;
       align-items: center;
+      gap: 10px;
     }
 
-    :host {
-      display: block;
-      width: 100%;
+    .btn.toggle {
+      background: #0bf003;
+      color: #000;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn.toggle:hover {
+      background: #09c002;
     }
   `]
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  currentTheme: 'dark' | 'light' = 'light';
+
+  constructor(private theme: ThemeService) {
+    this.theme.themeChanges().subscribe(t => {
+      this.currentTheme = t;
+      document.body.classList.toggle('dark-theme', t === 'dark');
+    });
+  }
+
+  toggleTheme() {
+    this.theme.toggle();
+  }
+}

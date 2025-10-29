@@ -1,53 +1,35 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
+import { LeftPanelComponent } from './panels/left.panel.component';
+import { RightPanelComponent } from './panels/right.panel.component';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, RouterModule],
+  imports: [CommonModule, HeaderComponent, LeftPanelComponent, RightPanelComponent, RouterModule],
   template: `
     <div class="layout">
-      <header class="header">
-        <app-header></app-header>
-      </header>
+      <app-header></app-header>
 
       <div class="main">
-        <aside class="left-panel">Левая панель</aside>
+        <app-left-panel></app-left-panel>
 
         <section class="content">
           <router-outlet></router-outlet>
         </section>
 
-        <aside class="right-panel">Правая панель</aside>
+        <app-right-panel></app-right-panel>
       </div>
 
       <footer class="footer">Футер</footer>
     </div>
   `,
   styles: [`
-    :host {
-      display: block;
-      height: 100vh;
-      overflow: hidden;
-    }
+    :host { display: block; height: 100vh; overflow: hidden; }
 
-    .layout {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .header {
-      height: 200px;
-      background: #222;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+    .layout { display: flex; flex-direction: column; height: 100%; }
 
     .main {
       flex: 1;
@@ -57,27 +39,17 @@ import { RouterModule } from '@angular/router';
       overflow: hidden;
     }
 
-    .left-panel,
-    .right-panel {
-      background: #2e2e2e;
-      color: #ccc;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-
     .content {
-      background: #328611;
+      background: var(--bg);
       padding: 1rem;
       overflow-y: auto;
     }
 
     .footer {
       height: 60px;
-      background: #111;
-      color: white;
+      background: var(--panel-bg);
       text-align: center;
       line-height: 60px;
-      flex-shrink: 0;
     }
   `]
 })
