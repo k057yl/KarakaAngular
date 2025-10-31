@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { ItemCardComponent, ItemDto } from '../item/item.card.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-items-list',
@@ -16,24 +18,27 @@ import { ItemCardComponent, ItemDto } from '../item/item.card.component';
         (sell)="sellItem($event)">
       </app-item-card>
     </div>
-  `,
-  styles: [`
-    .items-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-  `]
+  `
 })
 export class ItemsListComponent implements OnInit {
   items: ItemDto[] = [];
   private apiUrl = `${environment.apiBaseUrl}/items/my`;
   private salesUrl = `${environment.apiBaseUrl}/sales`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
+    this.auth.token$.subscribe(token => {
+      if (!token) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      this.loadItems();
+    });
+  }
+
+  private loadItems() {
     this.http.get<ItemDto[]>(this.apiUrl).subscribe({
       next: (data) => {
         this.items = data.map(i => ({

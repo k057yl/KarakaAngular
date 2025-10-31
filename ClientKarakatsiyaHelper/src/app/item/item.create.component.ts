@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService, ItemCreateDto } from '../services/auth.service';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 interface Category {
   id: number;
@@ -100,10 +101,16 @@ export class ItemCreateComponent implements OnInit {
 
   private categoriesUrl = `${environment.apiBaseUrl}/categories`;
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.loadCategories();
+    this.auth.token$.subscribe(token => {
+      if (!token) {
+        this.router.navigate(['/login']);
+      } else {
+        this.loadCategories();
+      }
+    });
   }
 
   loadCategories() {
