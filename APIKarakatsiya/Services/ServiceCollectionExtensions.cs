@@ -84,6 +84,7 @@ namespace APIKarakatsiya.Services
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<ISaleService, SaleService>();
+            services.AddScoped<IItemFilterService, ItemFilterService>();
 
             return services;
         }

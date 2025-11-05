@@ -42,4 +42,14 @@ export class ApiService {
     const headers = this.getAuthHeaders();
     return this.http.get<any[]>(`${this.baseUrl}/sales/my`, { headers });
   }
+
+  // ======================= Sales filters =======================
+  filterSales(filter: { sortBy?: string }): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    const params = new URLSearchParams();
+
+    if (filter.sortBy) params.append('sortBy', filter.sortBy);
+
+    return this.http.get<any[]>(`${this.baseUrl}/sales/filter?${params.toString()}`, { headers });
+  }
 }

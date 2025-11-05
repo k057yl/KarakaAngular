@@ -44,7 +44,7 @@ interface Category {
       margin: 30px auto;
       padding: 20px;
       border-radius: 12px;
-      background: #fff;
+      background: var(--item-create-bg);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;

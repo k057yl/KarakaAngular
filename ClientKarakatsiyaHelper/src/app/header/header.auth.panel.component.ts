@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { TranslateService } from '../services/translate.service';
 
 @Component({
   selector: 'app-header-auth-panel',
@@ -10,13 +11,13 @@ import { AuthService } from '../services/auth.service';
   template: `
     <div class="auth-panel">
       <ng-container *ngIf="isAuthenticated; else notLoggedIn">
-        <p>Привет, {{ username }}</p>
-        <button (click)="logout()">Выход</button>
+        <p>{{ t('HEADER.HELLO_TEXT') }}, {{ username }}</p>
+        <button (click)="logout()">{{ t('HEADER.BOTTON_LOGOUT') }}</button>
       </ng-container>
 
       <ng-template #notLoggedIn>
-        <button routerLink="/login">Логин</button>
-        <button routerLink="/register">Регистрация</button>
+        <button routerLink="/login">{{ t('HEADER.BOTTON_LOGIN') }}</button>
+        <button routerLink="/register">{{ t('HEADER.BOTTON_REGISTRATION') }}</button>
       </ng-template>
     </div>
   `,
@@ -28,17 +29,18 @@ import { AuthService } from '../services/auth.service';
     }
 
     button {
-      background: var(--btn-bg);
+      background: var(--botton-bg);
       border: none;
       padding: 8px 12px;
       cursor: pointer;
-      color: var(--btn-text);
+      color: var(--botton-text);
       font-weight: bold;
       border-radius: 4px;
     }
 
     button:hover {
-      background: var(--accent);
+      background: var(--botton-bg-hover);
+      color: var(--botton-text-hover);
     }
   `]
 })
@@ -46,7 +48,7 @@ export class HeaderAuthPanelComponent {
   isAuthenticated = false;
   username = 'Гость';
 
-  constructor(private auth: AuthService) {
+  constructor(private auth: AuthService, private translate: TranslateService) {
     this.auth.token$.subscribe(token => {
       if (token) {
         this.isAuthenticated = true;
@@ -56,6 +58,10 @@ export class HeaderAuthPanelComponent {
         this.username = 'Гость';
       }
     });
+  }
+
+  t(key: string) {
+    return this.translate.t(key);
   }
 
   logout() {

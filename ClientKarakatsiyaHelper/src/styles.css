@@ -1,23 +1,23 @@
 :root {
-  --bg: #475d86;
-  --header-bg: #475d86;
-  --panel-bg: #475d86;
-  --text: #0f1720;
-  --muted: #6b7c8e;
-  --accent: #0078a3;
-  --btn-bg: var(--accent);
-  --btn-text: #ffffff;
+  --main-bg: #475d86;
+  --main-text: #ffffff;
+  --botton-bg: #5f7ab1;
+  --botton-bg-hover: #6f8bc8;
+  --botton-text: #ffffff;
+  --botton-text-hover: #f0f0f0;
+  --left-panel-bg: rgba(71, 93, 134, 0.7);
+  --item-create-bg: #4d6592;
 }
 
 body.dark-theme {
-  --bg: #0E1A2B;
-  --panel-bg: #0E1A2B;
-  --header-bg: #0E1A2B;
-  --text: #E4F0FF;
-  --muted: #8AA0B8;
-  --accent: #16C2D6;
-  --btn-bg: #00B4C6;
-  --btn-text: #00121a;
+  --main-bg: #0E1A2B;
+  --main-text: #b6e3c1;
+  --botton-bg: #1f3a52;
+  --botton-bg-hover: #29506e;
+  --botton-text: #e0e0e0;
+  --botton-text-hover: #ffffff;
+  --left-panel-bg: rgba(14, 26, 43, 0.7);
+  --item-create-bg: #152741;
 }
 
 :root, .dark-theme {
@@ -27,7 +27,7 @@ body.dark-theme {
 html, body {
   height: 100%;
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--main-bg);
+  color: var(--main-text);
   font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
 }

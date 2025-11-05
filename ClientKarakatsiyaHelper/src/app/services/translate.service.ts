@@ -4,10 +4,10 @@ import { translations, Lang } from '../i18n';
 
 @Injectable({ providedIn: 'root' })
 export class TranslateService {
-  private langSubject = new BehaviorSubject<Lang>('ru');
+  private langSubject = new BehaviorSubject<Lang>('uk');
   lang$ = this.langSubject.asObservable();
 
-  private currentLang: Lang = 'ru';
+  private currentLang: Lang = 'uk';
 
   switchLang(lang: Lang) {
     this.currentLang = lang;
