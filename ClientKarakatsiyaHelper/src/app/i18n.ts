@@ -17,6 +17,22 @@ export const translations = {
     { WELCOME: 'Ласкаво просимо!',
        START: 'Почати' 
     },
+    ITEM_CREATE: {
+      TITLE: 'Створити предмет',
+      PLACEHOLDER_TITLE: 'Назва',
+      PLACEHOLDER_DESC: 'Опис',
+      PLACEHOLDER_PRICE: 'Ціна купівлі',
+      CHOOSE_CATEGORY: 'Оберіть категорію',
+      CHOOSE_FILE: 'Оберіть файл',
+      PHOTO_UPLOADED: 'Фото завантажено',
+      BUTTON_CREATE: 'Створити',
+      ERROR_TITLE: 'Введіть назву!',
+      ERROR_CATEGORY: 'Оберіть категорію!',
+      ERROR_PRICE: 'Введіть корректную ціну!',
+      ERROR_PHOTO: 'Спочатку завантажте фото!',
+      ERROR_CREATE: 'Помилка створення!',
+      SUCCESS: 'Айтем успішно створен!'
+    }
   },
   en: { 
     HEADER:
@@ -35,7 +51,23 @@ export const translations = {
     HOME: 
     { WELCOME: 'Welcome!',
        START: 'Start' 
-      }, 
+    },
+    ITEM_CREATE: {
+      TITLE: 'Create an item',
+      PLACEHOLDER_TITLE: 'Name',
+      PLACEHOLDER_DESC: 'Description',
+      PLACEHOLDER_PRICE: 'Purchase price',
+      CHOOSE_CATEGORY: 'Choose a category',
+      CHOOSE_FILE: 'Select a file',
+      PHOTO_UPLOADED: 'Photo uploaded',
+      BUTTON_CREATE: 'Create',
+      ERROR_TITLE: 'Enter a name!',
+      ERROR_CATEGORY: 'Choose a category!',
+      ERROR_PRICE: 'Enter the correct price!',
+      ERROR_PHOTO: 'Upload a photo first!',
+      ERROR_CREATE: 'Creation error!',
+      SUCCESS: 'Item successfully created!'
+    } 
     }
 };
 
