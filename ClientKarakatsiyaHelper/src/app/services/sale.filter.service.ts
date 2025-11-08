@@ -1,34 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ApiService } from './api.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, switchMap, of } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { SaleDto } from '../sale/sale.card.component';
+import { AuthService } from './auth.service';
 
 export interface SaleFilter {
-  minPrice?: number;
-  maxPrice?: number;
+  minProfit?: number;
+  maxProfit?: number;
   startDate?: string;
   endDate?: string;
-  sortBy?: string;
+  sortBy?: 'profit_asc' | 'profit_desc' | 'date_asc' | 'date_desc';
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SaleFilterService {
-  constructor(private api: ApiService) {}
+  private apiUrl = `${environment.apiBaseUrl}/salefilter`;
 
-  filterSales(filter: SaleFilter): Observable<SaleDto[]> {
-    const params = new URLSearchParams();
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
-    if (filter.minPrice) params.set('minPrice', filter.minPrice.toString());
-    if (filter.maxPrice) params.set('maxPrice', filter.maxPrice.toString());
-    if (filter.startDate) params.set('startDate', filter.startDate);
-    if (filter.endDate) params.set('endDate', filter.endDate);
-    if (filter.sortBy) params.set('sortBy', filter.sortBy);
+  filterSales(filter: SaleFilter = {}): Observable<SaleDto[]> {
+    let params = new HttpParams();
+    Object.entries(filter).forEach(([key, value]) => {
+      if (value != null && value !== '') {
+        params = params.set(key, value.toString());
+      }
+    });
 
-    const query = params.toString();
-    const endpoint = query ? `itemfilter?${query}` : 'itemfilter';
-
-    return this.api.get<SaleDto[]>(endpoint);
+    return this.auth.token$.pipe(
+      switchMap(token => {
+        if (!token) return of([]); // если нет токена, возвращаем пустой массив
+        const headers = { Authorization: `Bearer ${token}` };
+        return this.http.get<SaleDto[]>(this.apiUrl, { params, headers });
+      })
+    );
   }
 }

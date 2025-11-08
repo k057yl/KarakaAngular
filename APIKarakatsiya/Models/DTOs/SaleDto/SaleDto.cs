@@ -11,5 +11,6 @@
         public decimal Profit { get; set; }
         public DateTime CreatedAt { get; set; }
         public List<string> PhotoUrls { get; set; } = new();
+        public string UserId { get; set; } = null!;
     }
 }

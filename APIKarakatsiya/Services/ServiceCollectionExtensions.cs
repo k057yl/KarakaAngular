@@ -1,12 +1,12 @@
 ﻿using APIKarakatsiya.Data;
 using APIKarakatsiya.Models.Entities;
+using APIKarakatsiya.Services.Categories;
 using APIKarakatsiya.Services.Items;
 using APIKarakatsiya.Services.Sales;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 using System.Text;
 
 namespace APIKarakatsiya.Services
@@ -85,6 +85,8 @@ namespace APIKarakatsiya.Services
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<ISaleService, SaleService>();
             services.AddScoped<IItemFilterService, ItemFilterService>();
+            services.AddScoped<ISaleFilterService, SaleFilterService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }

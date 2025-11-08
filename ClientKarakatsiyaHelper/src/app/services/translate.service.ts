@@ -25,4 +25,8 @@ export class TranslateService {
 
     return val;
   }
+
+  getCurrentLang(): Lang {
+    return this.currentLang;
+  }
 }

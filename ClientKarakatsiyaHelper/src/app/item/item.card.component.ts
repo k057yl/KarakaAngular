@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateService } from '../services/translate.service';
 
 export interface ItemDto {
   id: number;
@@ -24,18 +25,18 @@ export interface ItemDto {
       </div>
 
       <div class="item-content">
-        <div class="item-title">{{ item.title }}</div>
-        <div class="item-description">{{ item.description }}</div>
+        <div class="item-title"> {{ translate.t('ITEM_CARD.TITLE') }} {{ item.title }}</div>
+        <div class="item-description"> {{ translate.t('ITEM_CARD.DESCRIPTION') }} {{ item.description }}</div>
         <div class="item-footer">
-          <span>💸 {{ item.purchasePrice | number:'1.0-2' }}</span>
+          <span>{{ translate.t('ITEM_CARD.PRICE') }} {{ item.purchasePrice | number:'1.0-2' }}</span>
 
           <button *ngIf="item.status === 'available'"
                   class="sell-btn"
                   (click)="sell.emit(item)">
-            Продать
+            {{ translate.t('ITEM_CARD.BOTTON_SALE') }}
           </button>
 
-          <span *ngIf="item.status === 'sold'" class="sold-label">Продано</span>
+          <span *ngIf="item.status === 'sold'" class="sold-label">{{ translate.t('ITEM_CARD.STATE') }}</span>
         </div>
       </div>
     </div>
@@ -52,9 +53,8 @@ export interface ItemDto {
   }
 
   .item-card:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    z-index: 2;
+    background-color: var(--item-card-bg-hover);
+    box-shadow: 0 0 12px var(--item-card-border);
   }
 
   .item-image-wrapper {
@@ -130,4 +130,6 @@ export interface ItemDto {
 export class ItemCardComponent {
   @Input() item!: ItemDto;
   @Output() sell = new EventEmitter<ItemDto>();
+
+  constructor(public translate: TranslateService) {}
 }

@@ -1,12 +1,9 @@
-﻿namespace APIKarakatsiya.Models.Entities
+﻿namespace APIKarakatsiya.Models.DTOs.CategoryDto
 {
-    public class Category
+    public class CategoryDto
     {
         public int Id { get; set; }
-
         public string NameEn { get; set; } = string.Empty;
         public string NameUk { get; set; } = string.Empty;
-
-        public ICollection<Item> Items { get; set; } = new List<Item>();
     }
 }

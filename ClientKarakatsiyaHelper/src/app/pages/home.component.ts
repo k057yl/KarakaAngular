@@ -22,10 +22,10 @@ import { TranslateService } from '../services/translate.service';
 
         <div class="btn-group" *ngIf="!isAuthenticated">
           <button routerLink="/register" class="home-btn register">
-            {{ translate.t('HOME.REGISTER') || 'Регистрация' }}
+            {{ translate.t('HOME.REGISTER') }}
           </button>
           <button routerLink="/login" class="home-btn login">
-            {{ translate.t('HOME.LOGIN') || 'Войти' }}
+            {{ translate.t('HOME.LOGIN') }}
           </button>
         </div>
       </div>

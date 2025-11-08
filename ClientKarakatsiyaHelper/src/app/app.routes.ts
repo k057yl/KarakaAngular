@@ -5,6 +5,7 @@ import { LoginComponent } from './login/login.component';
 import { ItemCreateComponent } from './item/item.create.component';
 import { ItemsListComponent } from './item/items.list.component';
 import { SalesListComponent } from './sale/sale.list.component';
+import { CategoryCreateComponent } from './category/category.create.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'item-create', component: ItemCreateComponent },
   { path: 'item-list', component: ItemsListComponent },
-  { path: 'sale-list', component: SalesListComponent }
+  { path: 'sale-list', component: SalesListComponent },
+  { path: 'category', component: CategoryCreateComponent }
 ];

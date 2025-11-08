@@ -129,13 +129,14 @@ export class LoginComponent {
 
   login() {
     this.auth.login(this.email, this.password).subscribe({
-      next: (res: { token: string }) => {
+      next: (res: { token: string; user: any }) => {
         this.auth.saveToken(res.token);
-        this.isLoggedIn = true;
-        this.message = '';
+        this.auth.setUser(res.user);
+
+        // Перезагрузка + редирект на главную
+        window.location.href = '/';
       },
       error: () => {
-        this.isLoggedIn = false;
         this.message = 'Ошибка входа';
       }
     });

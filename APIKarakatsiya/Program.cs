@@ -2,7 +2,6 @@
 using APIKarakatsiya.Models.Entities;
 using APIKarakatsiya.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,12 +35,6 @@ using (var scope = app.Services.CreateScope())
         var password = builder.Configuration["Admin:Password"];
         if ((await userManager.CreateAsync(admin, password)).Succeeded)
             await userManager.AddToRoleAsync(admin, "admin");
-    }
-
-    if (!await db.Categories.AnyAsync(c => c.Name == "Default"))
-    {
-        db.Categories.Add(new Category { Name = "Default" });
-        await db.SaveChangesAsync();
     }
 }
 

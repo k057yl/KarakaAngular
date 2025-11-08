@@ -1,6 +1,8 @@
 ﻿using APIKarakatsiya.Models.DTOs.ItemDto;
 using APIKarakatsiya.Services.Items;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace APIKarakatsiya.Controllers
 {
@@ -8,28 +10,20 @@ namespace APIKarakatsiya.Controllers
     [Route("api/[controller]")]
     public class ItemFilterController : ControllerBase
     {
-        private readonly IItemFilterService _filterService;
+        private readonly IItemFilterService _itemFilterService;
 
-        public ItemFilterController(IItemFilterService filterService)
+        public ItemFilterController(IItemFilterService itemFilterService)
         {
-            _filterService = filterService;
+            _itemFilterService = itemFilterService;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetFilteredItems([FromQuery] ItemFilterDto filter)
         {
-            try
-            {
-                var items = await _filterService.FilterAsync(filter);
-                return Ok(items);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("=== FILTER CONTROLLER ERROR ===");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                return StatusCode(500, new { error = ex.Message });
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var items = await _itemFilterService.FilterAsync(filter, userId);
+            return Ok(items);
         }
     }
 }

@@ -14,10 +14,9 @@ namespace APIKarakatsiya.Services.Sales
             _context = context;
         }
 
-        public async Task<SaleDto> CreateAsync(SaleCreateDto dto)
+        public async Task<SaleDto> CreateAsync(SaleCreateDto dto, string userId)
         {
-            var item = await _context.Items
-                .FirstOrDefaultAsync(i => i.Id == dto.ItemId)
+            var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == dto.ItemId)
                 ?? throw new Exception("Item not found");
 
             if (item.Status == "sold")
@@ -28,7 +27,8 @@ namespace APIKarakatsiya.Services.Sales
                 ItemId = dto.ItemId,
                 SalePrice = dto.SalePrice,
                 SaleDate = dto.SaleDate,
-                Profit = dto.SalePrice - item.PurchasePrice
+                Profit = dto.SalePrice - item.PurchasePrice,
+                UserId = userId
             };
 
             _context.Sales.Add(sale);
@@ -46,7 +46,9 @@ namespace APIKarakatsiya.Services.Sales
                 SalePrice = sale.SalePrice,
                 SaleDate = sale.SaleDate,
                 Profit = sale.Profit,
-                CreatedAt = sale.CreatedAt
+                CreatedAt = sale.CreatedAt,
+                PhotoUrls = item.Photos.Select(p => p.Url).ToList(),
+                UserId = sale.UserId
             };
         }
 

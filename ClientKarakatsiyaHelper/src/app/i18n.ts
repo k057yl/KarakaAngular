@@ -7,11 +7,12 @@ export const translations = {
       HELLO_TEXT: 'Привіт!',
       TAGLINE: 'Зберігай у Каракації, не в голові'
     },
-    LEFT_PANEL:
+    MAIN_BOTTON_PANEL:
     {
-      BOTTON_CREATE: 'Створити предмет',
-      BOTTON_SHOW_ITEMS: 'Предмети',
-      BOTTON_SHOW_SALES: 'Продажі'
+      CREATE: 'Створити предмет',
+      SHOW_ITEMS: 'Предмети',
+      SHOW_SALES: 'Продажі',
+      CREATE_CATEGORY: 'Створити категорію'
     },
     HOME: 
     { WELCOME: 'Ласкаво просимо!',
@@ -32,6 +33,31 @@ export const translations = {
       ERROR_PHOTO: 'Спочатку завантажте фото!',
       ERROR_CREATE: 'Помилка створення!',
       SUCCESS: 'Айтем успішно створен!'
+    },
+    ITEM_CARD: {
+      TITLE: 'Назва :',
+      DESCRIPTION: 'Опис :',
+      PRICE: 'Ціна :',
+      STATE: 'Продано',
+      BOTTON_SALE: 'Продати',
+      BOTTON_DELETE: 'Видалити'
+    },
+    SALE_CARD: {
+      TITLE: 'Назва :',
+      PRICE: 'Ціна закупівлі :',
+      PROFIT: 'Прибуток :',
+      BOTTON_DELETE: 'Видалити'
+    },
+    PAGINATION: {
+      PAGE: 'Сторінка'
+    },
+    CATEGORY_CREATE:{
+      GREETINGS: 'Створити категорію',
+      TITLE_EN: 'Назва EN',
+      TITLE_UA: 'Назва UA',
+      BOTTON_CREATE: 'Створити',
+      LIST_CATEGORY: 'Категорії',
+      BOTTON_DELETE: 'Видалити'
     }
   },
   en: { 
@@ -42,11 +68,12 @@ export const translations = {
       HELLO_TEXT: 'Hello!',
       TAGLINE: 'Store it in Karakatsiya, not in your head'
     },
-    LEFT_PANEL:
+    MAIN_BOTTON_PANEL:
     {
-      BOTTON_CREATE: 'Create item',
-      BOTTON_SHOW_ITEMS: 'Items',
-      BOTTON_SHOW_SALES: 'Sales'
+      CREATE: 'Create item',
+      SHOW_ITEMS: 'Items',
+      SHOW_SALES: 'Sales',
+      CREATE_CATEGORY: 'Create category'
     },
     HOME: 
     { WELCOME: 'Welcome!',
@@ -67,7 +94,32 @@ export const translations = {
       ERROR_PHOTO: 'Upload a photo first!',
       ERROR_CREATE: 'Creation error!',
       SUCCESS: 'Item successfully created!'
-    } 
+    },
+    ITEM_CARD: {
+      TITLE: 'Title :',
+      DESCRIPTION: 'Description :',
+      PRICE: 'Price :',
+      STATE: 'Sold',
+      BOTTON_SALE: 'Sale',
+      BOTTON_DELETE: 'Delete'
+    },
+    SALE_CARD: {
+      TITLE: 'Title :',
+      PRICE: 'Purchase price :',
+      PROFIT: 'Profit :',
+      BOTTON_DELETE: 'Delete'
+    },
+    PAGINATION: {
+      PAGE: 'Page'
+    },
+    CATEGORY_CREATE:{
+      GREETINGS: 'Create category',
+      TITLE_EN: 'Title EN',
+      TITLE_UA: 'Title UA',
+      BOTTON_CREATE: 'Create',
+      LIST_CATEGORY: 'List category',
+      BOTTON_DELETE: 'Delete'
+    }
     }
 };
 

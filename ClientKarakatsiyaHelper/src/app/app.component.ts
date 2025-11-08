@@ -1,26 +1,17 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
-import { LeftPanelComponent } from './panels/left.panel.component';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, LeftPanelComponent, RouterModule],
+  imports: [CommonModule, HeaderComponent, RouterModule],
   template: `
     <div class="layout">
       <app-header></app-header>
 
       <div class="main">
-        <button class="menu-btn" (click)="togglePanel()">☰</button>
-
-        <app-left-panel
-          class="left-panel"
-          [class.visible]="isPanelVisible"
-          (click)="hidePanel()">
-        </app-left-panel>
-
         <section class="content" (click)="hidePanel()">
           <router-outlet></router-outlet>
         </section>
@@ -48,30 +39,39 @@ import { RouterModule } from '@angular/router';
       cursor: pointer;
     }
 
-    .left-panel {
-      position: fixed;
-      top: 80px; /* высота хедера */
-      left: -260px;
-      width: 260px;
-      height: calc(100% - 80px);
-      color: white;
-      transition: left 0.3s ease;
-      z-index: 1000;
-      overflow-y: auto;
-    }
-
-    .left-panel.visible {
-      left: 0;
-    }
-
     .content {
       background: var(--bg);
       padding: 1rem;
       height: 100%;
       overflow-y: auto;
       transition: filter 0.3s ease;
-      padding-top: 80px; /* добавлен отступ под хедер */
+      padding-top: 80px;
       box-sizing: border-box;
+    }
+
+    /* Скролл для Chrome, Edge, Opera */
+    .content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .content::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .content::-webkit-scrollbar-thumb {
+      background: var(--botton-bg);
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    /* Скролл для Firefox */
+    .content {
+      scrollbar-width: thin;
+      scrollbar-color: var(--botton-bg) rgba(255, 255, 255, 0.05);
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+      background: var(--botton-bg-hover);
     }
 
     .footer {
@@ -79,10 +79,6 @@ import { RouterModule } from '@angular/router';
       background: var(--bg);
       text-align: center;
       line-height: 60px;
-    }
-
-    .left-panel.visible ~ .content {
-      filter: blur(2px);
     }
   `]
 })

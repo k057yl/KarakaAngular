@@ -11,6 +11,8 @@
   --item-create-bg: #4d6592;
   --input-bg: #2a3955;
   --input-text: #e0e0e0;
+  --item-card-border: rgba(255, 255, 255, 0.2);
+  --item-card-bg-hover: rgba(255, 255, 255, 0.05);
 }
 
 body.dark-theme {
@@ -26,6 +28,8 @@ body.dark-theme {
   --item-create-bg: #152741;
   --input-bg: #355483;
   --input-text: #adadad;
+  --item-card-border: rgba(158, 158, 158, 0.2);
+  --item-card-bg-hover: rgba(0, 32, 80, 0.363);
 }
 
 :root, .dark-theme {

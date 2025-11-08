@@ -4,11 +4,19 @@ import { CommonModule } from '@angular/common';
 import { AuthService, ItemCreateDto } from '../services/auth.service';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
+import { Lang } from '../i18n';
 import { TranslateService } from '../services/translate.service';
+import { Subscription } from 'rxjs';
 
 interface Category {
   id: number;
-  name: string;
+  nameEn: string;
+  nameUk: string;
+}
+
+interface CategoryOption {
+  id: number;
+  displayName: string;
 }
 
 @Component({
@@ -26,7 +34,7 @@ interface Category {
 
       <select [(ngModel)]="item.CategoryId">
         <option [value]="0" disabled>{{ t('ITEM_CREATE.CHOOSE_CATEGORY') }}</option>
-        <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+        <option *ngFor="let c of categoryOptions" [value]="c.id">{{ c.displayName }}</option>
       </select>
 
       <label class="file-upload">
@@ -133,9 +141,11 @@ export class ItemCreateComponent implements OnInit {
   };
 
   categories: Category[] = [];
+  categoryOptions: CategoryOption[] = [];
   message = '';
   photoUrl = '';
   selectedFileName = '';
+  langSub?: Subscription;
 
   private categoriesUrl = `${environment.apiBaseUrl}/categories`;
 
@@ -147,19 +157,35 @@ export class ItemCreateComponent implements OnInit {
 
   ngOnInit() {
     this.auth.token$.subscribe(token => {
-      if (!token) {
-        this.router.navigate(['/login']);
-      } else {
-        this.loadCategories();
-      }
+      if (!token) this.router.navigate(['/login']);
+      else this.loadCategories();
     });
+
+    this.langSub = this.translate.lang$.subscribe(() => {
+      this.buildCategoryOptions();
+    });
+  }
+
+  ngOnDestroy() {
+    this.langSub?.unsubscribe();
   }
 
   loadCategories() {
     this.auth['http'].get<Category[]>(this.categoriesUrl).subscribe({ 
-      next: data => this.categories = data,
+      next: data => {
+        this.categories = data;
+        this.buildCategoryOptions();
+      },
       error: err => console.error('Ошибка загрузки категорий', err)
     });
+  }
+
+  buildCategoryOptions() {
+    const lang: Lang = this.translate.getCurrentLang();
+    this.categoryOptions = this.categories.map(c => ({
+      id: c.id,
+      displayName: lang === 'uk' ? c.nameUk : c.nameEn
+    }));
   }
 
   uploadImage(event: any) {

@@ -18,22 +18,21 @@ namespace APIKarakatsiya.Controllers
             _service = service;
         }
 
+        // Создание своей продажи
         [HttpPost]
-        //[HttpPost("create")]
         public async Task<IActionResult> Create(SaleCreateDto dto)
         {
-            var result = await _service.CreateAsync(dto);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            // Привязка продажи к текущему пользователю
+            dto.UserId = userId;
+
+            var result = await _service.CreateAsync(dto, userId);
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var sale = await _service.GetByIdAsync(id);
-            if (sale == null) return NotFound();
-            return Ok(sale);
-        }
-
+        // Получение своих продаж
         [HttpGet("my")]
         public async Task<IActionResult> GetMySales()
         {
@@ -44,9 +43,29 @@ namespace APIKarakatsiya.Controllers
             return Ok(result);
         }
 
+        // Получение конкретной своей продажи
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            var sale = await _service.GetByIdAsync(id);
+            if (sale == null || sale.UserId != userId) return NotFound();
+
+            return Ok(sale);
+        }
+
+        // Удаление своей продажи
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            var sale = await _service.GetByIdAsync(id);
+            if (sale == null || sale.UserId != userId) return NotFound();
+
             await _service.DeleteAsync(id);
             return NoContent();
         }
