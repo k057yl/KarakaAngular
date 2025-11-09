@@ -17,7 +17,14 @@ import { RouterModule } from '@angular/router';
         </section>
       </div>
 
-      <footer class="footer">Футер</footer>
+      <footer class="footer">
+        <span>© 2025 Karakatsiya</span>
+        <div class="social">
+          <a href="#" target="_blank">🐦</a>
+          <a href="#" target="_blank">📘</a>
+          <a href="#" target="_blank">📸</a>
+        </div>
+      </footer>
     </div>
   `,
   styles: [`
@@ -77,8 +84,28 @@ import { RouterModule } from '@angular/router';
     .footer {
       height: 60px;
       background: var(--bg);
-      text-align: center;
-      line-height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 14px;
+      color: var(--input-text);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer .social {
+      display: flex;
+      gap: 12px;
+    }
+
+    .footer .social a {
+      color: var(--input-text);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer .social a:hover {
+      color: var(--botton-bg);
     }
   `]
 })
